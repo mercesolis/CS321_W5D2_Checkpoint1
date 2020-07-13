@@ -14,44 +14,62 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
         public BlogRepository(AppDbContext dbContext) 
         {
             // TODO: inject AppDbContext
+            _dbContext = dbContext;
         }
 
         public IEnumerable<Blog> GetAll()
         {
             // TODO: Retrieve all blgs. Include Blog.User.
-            throw new NotImplementedException();
+            return _dbContext.Blogs
+                .Include(b => b.User)
+                .ToList();
         }
 
         public Blog Get(int id)
         {
             // TODO: Retrieve the blog by id. Include Blog.User.
-            throw new NotImplementedException();
+            return _dbContext.Blogs
+                .Include(b => b.User)
+                .SingleOrDefault(b => b.Id == id);
         }
 
         public Blog Add(Blog blog)
         {
             // TODO: Add new blog
-            throw new NotImplementedException();
+            _dbContext.Blogs.Add(blog);
+            _dbContext.SaveChanges();
+            return blog;
         }
 
         public Blog Update(Blog updatedItem)
         {
             // TODO: update blog
-            throw new NotImplementedException();
-            //var existingItem = _dbContext.Find(updatedItem.Id);
-            //if (existingItem == null) return null;
-            //_dbContext.Entry(existingItem)
-            //   .CurrentValues
-            //   .SetValues(updatedItem);
-            //_dbContext.Blogs.Update(existingItem);
-            //_dbContext.SaveChanges();
-            //return existingItem;
+            
+
+            var existingItem = _dbContext.Blogs.Find(updatedItem.Id);
+            if (existingItem == null) return null;
+            _dbContext.Entry(existingItem)
+               .CurrentValues
+               .SetValues(updatedItem);
+            _dbContext.Blogs.Update(existingItem);
+            _dbContext.SaveChanges();
+            return existingItem;
+
+            
         }
 
         public void Remove(int id)
         {
             // TODO: remove blog
-            throw new NotImplementedException();
+            // retrieve the post that they're attempting to remove
+            //var post = this.Get(id);
+            //// make sure that the blog belongs to them before allowing the post to be removed
+            //// NOTE: Blog has to be Include()-ed when getting the Post for this to work!
+            //if (post.Blogs?.UserId != _userService.CurrentUserId)
+            //{
+            //    throw new ApplicationException("You can only modify blogs that belong to you.");
+            //}
+            //_dbContext.Remove(id);
         }
     }
 }

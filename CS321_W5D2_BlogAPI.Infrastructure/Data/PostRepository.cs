@@ -9,21 +9,28 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
 {
     public class PostRepository : IPostRepository
     {
+        private readonly AppDbContext _dbContext;
+
         public PostRepository(AppDbContext dbContext) 
-        {  
+        {
+            _dbContext = dbContext;
         }
 
         public Post Get(int id)
         {
             // TODO: Implement Get(id). Include related Blog and Blog.User
-            throw new NotImplementedException();
+            return _dbContext.Posts
+                .Include(p => p.BlogId)
+                .Include(p => p.Blog.User)
+                .SingleOrDefault(p => p.Id == id);
         }
 
         public IEnumerable<Post> GetBlogPosts(int blogId)
         {
             // TODO: Implement GetBlogPosts, return all posts for given blog id
+
             // TODO: Include related Blog and AppUser
-            throw new NotImplementedException();
+            
         }
 
         public Post Add(Post Post)
@@ -35,13 +42,16 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
         public Post Update(Post Post)
         {
             // TODO: update Post
-            throw new NotImplementedException();
+            var 
         }
 
         public IEnumerable<Post> GetAll()
         {
             // TODO: get all posts
-            throw new NotImplementedException();
+            return _dbContext.Posts
+                .Include(p => p.Blog.Posts)
+                .Include(p => p.Blog.User)
+                .ToList();
         }
 
         public void Remove(int id)
